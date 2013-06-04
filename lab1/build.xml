@@ -1,0 +1,42 @@
+<project name="lab1">
+
+    <path id="libs">
+        <fileset dir="lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <path id="bins">
+        <fileset dir="build/bin">
+            <include name="*.class" />
+        </fileset>
+    </path>
+
+    <target name="clear">
+        <delete dir="build" />
+        <mkdir dir="build/bin" />
+        <mkdir dir="build/jar" />
+    </target>
+
+    <target name="compilar" depends="clear">
+        <javac srcdir="src" destdir="build/bin" encoding="UTF8">
+            <classpath refid="libs" />
+        </javac>
+    </target>
+
+    <target name="testar" depends="compilar">
+        <java classname="org.junit.runner.JUnitCore" classpath="build/bin">
+            <classpath refid="bins" />
+            <classpath refid="libs" />
+            <arg line="ufcg.si1.TesteTest" />
+        </java>
+    </target>
+
+    <target name="executar" depends="compilar">
+        <java classname="ufcg.si1.Teste" classpath="build/bin">
+            <classpath refid="bins" />
+            <classpath refid="libs" />
+        </java>
+    </target>
+
+</project>
