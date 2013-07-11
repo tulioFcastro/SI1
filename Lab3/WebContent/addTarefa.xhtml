@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<ui:define name="Alguma coisa"></ui:define>
+	<h:form>
+		<fieldset>
+			<h:head>
+			</h:head>
+			<p:panelGrid columns="2">
+
+				<f:facet name="header">  
+					Add Tarefa  
+    			</f:facet>
+
+				<h:outputLabel for="firstname" value="Nome:" />
+				<p:inputText id="firstname" value="#{cadastraTarefa.nome}"
+					label="Firstname" />
+
+				<h:outputLabel for="surname" value="Descrição:" />
+				<p:inputTextarea id="surname" rows="10" cols="50"
+					value="#{cadastraTarefa.descricao}"
+					completeMethod="#{autoCompleteBean.completeArea}" queryDelay="750"
+					minQueryLength="4" label="Surname" />
+
+				<h:outputLabel for="dataConclusao" value="Data de Conclusão:" />
+				<p:inputMask id="dataConclusao"
+					value="#{cadastraTarefa.dataConclusao}" mask="99/99/9999"
+					label="DataConclusao" />
+
+				<h:outputLabel for="horaConclusao" value="Hora de Conclusão:" />
+				<p:inputMask id="horaConclusao"
+					value="#{cadastraTarefa.horaConclusao}" mask="99:99"
+					label="HoraConclusao" />
+
+
+				<f:facet name="footer">
+					<h:commandButton value="Confirma"
+						action="#{cadastraTarefa.cadastraTarefa}" style="margin:0" />
+					<h:commandButton value="Voltar"
+						action="#{cadastraTarefa.voltar}" style="margin:0" />
+				</f:facet>
+			</p:panelGrid>
+			<p:growl id="growl" showDetail="true" sticky="true" life="5"/>  
+		</fieldset>
+	</h:form>
+</h:body>
+</html>

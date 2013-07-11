@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+	<div>
+		<ui:define name="Alguma coisa"></ui:define>
+		<h:form>
+			<fieldset>
+				<h:head>
+					<h1>Lista de tarefas</h1>
+				</h:head>
+				<h:form>
+					<p:selectOneMenu value="#{cadastraTarefa.ordenacao}">
+						<f:selectItem itemValue="" itemLabel="Ordenar Por" />
+						<f:selectItem itemValue="dataCriacao" itemLabel="Data de criação" />
+						<f:selectItem itemValue="dataConclusao"
+							itemLabel="Data de conclusao" />
+					</p:selectOneMenu>
+					<h:commandButton value="Ordena" action="#{cadastraTarefa.ordena}" />
+
+					<p:dataTable var="tarefa"
+						value="#{cadastraTarefa.controller.tarefas}"
+						rowKey="#{tarefa.nome}" selection="#{cadastraTarefa.tarefa}"
+						selectionMode="single">
+						<p:column headerText="Tarefa">
+							<h:outputText value="#{tarefa.nome}" />
+						</p:column>
+
+						<p:column headerText="Descricao">
+							<h:outputText value="#{tarefa.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data de Criação">
+							<h:outputText value="#{tarefa.dataCriacao}" />
+						</p:column>
+
+						<p:column headerText="Data de Conclusão">
+							<h:outputText value="#{tarefa.dataConclusao}" />
+						</p:column>
+
+						<p:column headerText="Hora de Conclusão">
+							<h:outputText value="#{tarefa.horaConclusao}" />
+						</p:column>
+
+						<p:column headerText="Concluído">
+							<h:outputText value="#{tarefa.status}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+				<h:commandButton value="Nova Tarefa"
+					action="#{cadastraTarefa.addTarefa}"></h:commandButton>
+
+				<h:commandButton value="Concluir Tarefa"
+					action="#{cadastraTarefa.mudaStatus}"></h:commandButton>
+
+				<h:commandButton value="Remover Tarefa"
+					action="#{cadastraTarefa.removeTarefa}"></h:commandButton>
+
+				<h:commandButton value="Editar Tarefa"
+					action="#{cadastraTarefa.editarTarefa}"></h:commandButton>
+
+				<br /> <br />
+			</fieldset>
+			<p:growl id="growl" showDetail="true" sticky="true" life="5" />
+		</h:form>
+
+
+		<h:form>
+			<fieldset>
+				<h:head>
+					<h1>Tarefas Completas</h1>
+				</h:head>
+				<h:form>
+					<p:selectOneMenu value="#{cadastraTarefa.ordenacao}">
+						<f:selectItem itemValue="" itemLabel="Ordenar Por" />
+						<f:selectItem itemValue="dataCriacao" itemLabel="Data de criação" />
+						<f:selectItem itemValue="dataConclusao"
+							itemLabel="Data de conclusao" />
+					</p:selectOneMenu>
+					<h:commandButton value="Ordena"
+						action="#{cadastraTarefa.ordenaCompletas}"></h:commandButton>
+
+					<p:dataTable var="tarefasCompletas"
+						value="#{cadastraTarefa.controller.tarefasCompletas}"
+						rowKey="#{tarefa.nome}" selection="#{cadastraTarefa.tarefa}"
+						selectionMode="single">
+						<p:column headerText="Tarefa">
+							<h:outputText value="#{tarefasCompletas.nome}" />
+						</p:column>
+
+						<p:column headerText="Descricao">
+							<h:outputText value="#{tarefasCompletas.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data de Criação">
+							<h:outputText value="#{tarefasCompletas.dataCriacao}" />
+						</p:column>
+
+						<p:column headerText="Data de Conclusão">
+							<h:outputText value="#{tarefasCompletas.dataConclusao}" />
+						</p:column>
+
+						<p:column headerText="Hora de Conclusão">
+							<h:outputText value="#{tarefasCompletas.horaConclusao}" />
+						</p:column>
+
+						<p:column headerText="Concluído">
+							<h:outputText value="#{tarefasCompletas.status}" />
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+				<br /> <br />
+			</fieldset>
+		</h:form>
+
+		<h:form>
+			<fieldset>
+				<h:head>
+					<h1>Tarefas Incompletas</h1>
+				</h:head>
+				<h:form>
+					<p:selectOneMenu value="#{cadastraTarefa.ordenacao}">
+						<f:selectItem itemValue="" itemLabel="Ordenar Por" />
+						<f:selectItem itemValue="dataCriacao" itemLabel="Data de criação" />
+						<f:selectItem itemValue="dataConclusao"
+							itemLabel="Data de conclusao" />
+					</p:selectOneMenu>
+					<h:commandButton value="Ordena"
+						action="#{cadastraTarefa.ordenaIncompletas}"></h:commandButton>
+
+					<p:dataTable var="tarefasIncompletas"
+						value="#{cadastraTarefa.controller.tarefasIncompletas}"
+						rowKey="#{tarefa.nome}" selection="#{cadastraTarefa.tarefa}"
+						selectionMode="single">
+						<p:column headerText="Tarefa">
+							<h:outputText value="#{tarefasIncompletas.nome}" />
+						</p:column>
+
+						<p:column headerText="Descricao">
+							<h:outputText value="#{tarefasIncompletas.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data de Criação">
+							<h:outputText value="#{tarefasIncompletas.dataCriacao}" />
+						</p:column>
+
+						<p:column headerText="Data de Conclusão">
+							<h:outputText value="#{tarefasIncompletas.dataConclusao}" />
+						</p:column>
+
+						<p:column headerText="Hora de Conclusão">
+							<h:outputText value="#{tarefasIncompletas.horaConclusao}" />
+						</p:column>
+
+						<p:column headerText="Concluído">
+							<h:outputText value="#{tarefasIncompletas.status}" />
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+				<br /> <br />
+			</fieldset>
+		</h:form>
+	</div>
+</h:body>
+</html>
