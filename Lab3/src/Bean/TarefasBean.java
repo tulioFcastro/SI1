@@ -154,11 +154,14 @@ public class TarefasBean implements Serializable {
 			}
 			if (!this.getHoraConclusao().isEmpty()) {
 				try {
+					System.out.println(this.getHoraConclusao().substring(0, 2));
+					System.out.println(this.getHoraConclusao().substring(3, 5));
 					Hora hora = new Hora(Integer.parseInt(this
 							.getHoraConclusao().substring(0, 2)),
 							Integer.parseInt(this.getHoraConclusao().substring(
 									3, 5)));
-					tarefa.setHoraConclusao(hora);
+					System.out.println(hora);
+					newTarefa.setHoraConclusao(hora);
 				} catch (Exception e) {
 					msgUsuario("Hora inválida", "Informe uma hora válida");
 					return;
