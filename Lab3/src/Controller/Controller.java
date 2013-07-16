@@ -12,6 +12,8 @@ import Exceptions.HoraInvalidaException;
 import Exceptions.MesInvalidoException;
 import Exceptions.MinutoInvalidoException;
 import Exceptions.NomeInvalidoException;
+import Model.Data;
+import Model.Hora;
 import Model.Tarefa;
 
 public class Controller {
@@ -26,9 +28,16 @@ public class Controller {
 		this.tarefasIncompletas = new ArrayList<Tarefa>();
 		try {
 			Tarefa tarefa1 = new Tarefa("Tarefa1");
+			tarefa1.setDataConclusao(new Data(01,02,2016));
+			tarefa1.setHoraConclusao(new Hora(1,20));
 			Tarefa tarefa2 = new Tarefa("Tarefa2");
+			tarefa2.setDataConclusao(new Data(01,02,2015));
+			tarefa1.setHoraConclusao(new Hora(12,50));
 			Tarefa tarefa3 = new Tarefa("Tarefa3");
+			tarefa3.setDataConclusao(new Data(01,02,2014));
 			Tarefa tarefa4 = new Tarefa("Tarefa4");
+			tarefa4.setDataConclusao(new Data(01,02,2016));
+			tarefa4.setHoraConclusao(new Hora(1,21));
 			Tarefa tarefa5 = new Tarefa("Tarefa5");
 			adicionaTarefa(tarefa1);
 			adicionaTarefa(tarefa2);
