@@ -129,7 +129,10 @@ public class TarefasBean implements Serializable {
 
 	public void salvarTarefa() {
 
-		validaNome();
+		if(!validaNome()){
+			msgUsuario("Nome Inválido", "Digite um nome válido para edição");
+			return;
+		}
 		try {
 			Tarefa newTarefa = new Tarefa(this.getNome());
 			newTarefa.setDataCriacao(this.getTarefa().getDataCriacao());
@@ -172,7 +175,7 @@ public class TarefasBean implements Serializable {
 			msgUsuario("Nome Inválido", "Digite um nome válido.");
 			return;
 		}
-
+		limpaCampos();
 	}
 
 	public void ordena() {
