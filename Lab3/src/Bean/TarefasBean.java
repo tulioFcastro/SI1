@@ -71,7 +71,7 @@ public class TarefasBean implements Serializable {
 			try {
 				Data data = getDataConclusao(this.getDataConclusao());
 				tarefa.setDataConclusao(data);
-			} catch (DataInvalidaException e) {
+			} catch (Exception e) {
 				msgUsuario("Data inválida", "Informe uma data válida");
 				return;
 			}
@@ -81,7 +81,7 @@ public class TarefasBean implements Serializable {
 			try {
 				Hora hora = getHoraConclusao(this.getHoraConclusao());
 				tarefa.setHoraConclusao(hora);
-			} catch (HoraInvalidaException e) {
+			} catch (Exception e) {
 				msgUsuario("Hora inválida", "Informe uma hora válida");
 				return;
 			}
@@ -94,6 +94,7 @@ public class TarefasBean implements Serializable {
 					"Nome já cadastrado. Informe um outro nome para a tarefa.");
 			return;
 		}
+		
 		limpaCampos();
 	}
 
