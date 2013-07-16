@@ -11,10 +11,12 @@ import javax.faces.context.FacesContext;
 
 import Controller.Controller;
 import Exceptions.AnoInvalidoException;
+import Exceptions.DataInvalidaException;
 import Exceptions.DiaInvalidoException;
 import Exceptions.HoraInvalidaException;
 import Exceptions.MesInvalidoException;
 import Exceptions.MinutoInvalidoException;
+import Exceptions.TarefaJaCadastradaException;
 import Model.ComparadorDataConclusao;
 import Model.ComparadorDataCriacao;
 import Model.Data;
@@ -38,19 +40,21 @@ public class TarefasBean implements Serializable {
 	private String ordenacao;
 	private boolean status;
 	private Tarefa tarefa;
-	
-	public TarefasBean() throws NumberFormatException, HoraInvalidaException, MinutoInvalidoException, DiaInvalidoException, MesInvalidoException, AnoInvalidoException {
+
+	public TarefasBean() throws NumberFormatException, HoraInvalidaException,
+			MinutoInvalidoException, DiaInvalidoException,
+			MesInvalidoException, AnoInvalidoException {
 		this.controller = new Controller();
 	}
 
 	public String voltar() {
 		return "index.seam";
 	}
-	
+
 	public String addTarefa() {
 		return "addTarefa.seam";
 	}
-	
+
 	public void cadastraTarefa() throws NumberFormatException,
 			DiaInvalidoException, MesInvalidoException, AnoInvalidoException,
 			HoraInvalidaException, MinutoInvalidoException {
@@ -67,7 +71,7 @@ public class TarefasBean implements Serializable {
 			try {
 				Data data = getDataConclusao(this.getDataConclusao());
 				tarefa.setDataConclusao(data);
-			} catch (Exception e) {
+			} catch (DataInvalidaException e) {
 				msgUsuario("Data inválida", "Informe uma data válida");
 				return;
 			}
@@ -77,16 +81,17 @@ public class TarefasBean implements Serializable {
 			try {
 				Hora hora = getHoraConclusao(this.getHoraConclusao());
 				tarefa.setHoraConclusao(hora);
-			} catch (Exception e) {
+			} catch (HoraInvalidaException e) {
 				msgUsuario("Hora inválida", "Informe uma hora válida");
 				return;
 			}
 		}
-		if (!this.controller.getTarefas().contains(tarefa)) {
+
+		try {
 			this.controller.adicionaTarefa(tarefa);
-		} else {
+		} catch (TarefaJaCadastradaException e) {
 			msgUsuario("Tarefa Inválida",
-					"Informe um outro nome para a tarefa.");
+					"Nome já cadastrado. Informe um outro nome para a tarefa.");
 			return;
 		}
 		limpaCampos();
@@ -108,13 +113,16 @@ public class TarefasBean implements Serializable {
 			return;
 		}
 	}
-	
+
 	public void removeTarefa() {
 		if (this.tarefa == null) {
 			msgUsuario("Seleção inválida", "Selecione uma opção válida.");
 			return;
 		} else {
-			this.getController().removeTarefa(tarefa);
+			try {
+				this.getController().removeTarefa(tarefa);				
+			} catch (Exception e) {
+			}
 		}
 	}
 
@@ -128,7 +136,7 @@ public class TarefasBean implements Serializable {
 
 	public void salvarTarefa() {
 
-		if(!validaNome()){
+		if (!validaNome()) {
 			msgUsuario("Nome Inválido", "Digite um nome válido para edição");
 			return;
 		}
@@ -157,7 +165,7 @@ public class TarefasBean implements Serializable {
 					Hora hora = new Hora(Integer.parseInt(this
 							.getHoraConclusao().substring(0, 2)),
 							Integer.parseInt(this.getHoraConclusao().substring(
-									3, 5)));					
+									3, 5)));
 					newTarefa.setHoraConclusao(hora);
 				} catch (Exception e) {
 					msgUsuario("Hora inválida", "Informe uma hora válida");
@@ -174,7 +182,7 @@ public class TarefasBean implements Serializable {
 			msgUsuario("Nome Inválido", "Digite um nome válido.");
 			return;
 		}
-		limpaCampos();	
+		limpaCampos();
 	}
 
 	public void ordena() {

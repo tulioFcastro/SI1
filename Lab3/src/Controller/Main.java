@@ -7,6 +7,7 @@ import Exceptions.DiaInvalidoException;
 import Exceptions.HoraInvalidaException;
 import Exceptions.MesInvalidoException;
 import Exceptions.MinutoInvalidoException;
+import Exceptions.TarefaNaoCadastradaException;
 import Model.ComparadorDataConclusao;
 import Model.ComparadorDataCriacao;
 import Model.Data;
@@ -58,7 +59,9 @@ public class Main{
 	private static void remover() {
 		Tarefa tarefa = buscarTarefaRemocao();
 		if (tarefa != null) {
-			controller.removeTarefa(tarefa);
+			try {
+				controller.removeTarefa(tarefa);
+			} catch (TarefaNaoCadastradaException e) {	}
 			System.out.println("Tarefa Removida");
 		} else {
 			System.out.println("Operacao cancelada");

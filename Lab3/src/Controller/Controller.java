@@ -12,6 +12,8 @@ import Exceptions.HoraInvalidaException;
 import Exceptions.MesInvalidoException;
 import Exceptions.MinutoInvalidoException;
 import Exceptions.NomeInvalidoException;
+import Exceptions.TarefaJaCadastradaException;
+import Exceptions.TarefaNaoCadastradaException;
 import Model.Data;
 import Model.Hora;
 import Model.Tarefa;
@@ -28,16 +30,16 @@ public class Controller {
 		this.tarefasIncompletas = new ArrayList<Tarefa>();
 		try {
 			Tarefa tarefa1 = new Tarefa("Tarefa1");
-			tarefa1.setDataConclusao(new Data(01,02,2016));
-			tarefa1.setHoraConclusao(new Hora(1,20));
+			tarefa1.setDataConclusao(new Data(01, 02, 2016));
+			tarefa1.setHoraConclusao(new Hora(1, 20));
 			Tarefa tarefa2 = new Tarefa("Tarefa2");
-			tarefa2.setDataConclusao(new Data(01,02,2015));
-			tarefa1.setHoraConclusao(new Hora(12,50));
+			tarefa2.setDataConclusao(new Data(01, 02, 2015));
+			tarefa1.setHoraConclusao(new Hora(12, 50));
 			Tarefa tarefa3 = new Tarefa("Tarefa3");
-			tarefa3.setDataConclusao(new Data(01,02,2014));
+			tarefa3.setDataConclusao(new Data(01, 02, 2014));
 			Tarefa tarefa4 = new Tarefa("Tarefa4");
-			tarefa4.setDataConclusao(new Data(01,02,2016));
-			tarefa4.setHoraConclusao(new Hora(1,21));
+			tarefa4.setDataConclusao(new Data(01, 02, 2016));
+			tarefa4.setHoraConclusao(new Hora(1, 21));
 			Tarefa tarefa5 = new Tarefa("Tarefa5");
 			adicionaTarefa(tarefa1);
 			adicionaTarefa(tarefa2);
@@ -77,9 +79,14 @@ public class Controller {
 		this.tarefasIncompletas = tarefasIncompletas;
 	}
 
-	public void adicionaTarefa(Tarefa tarefa) {
-		this.tarefas.add(tarefa);
-		this.addTarefaIncompleta(tarefa);
+	public void adicionaTarefa(Tarefa tarefa)
+			throws TarefaJaCadastradaException {
+		if (!this.getTarefas().contains(tarefa)) {
+			this.tarefas.add(tarefa);
+			this.addTarefaIncompleta(tarefa);
+		} else {
+			throw new TarefaJaCadastradaException();
+		}
 	}
 
 	public List<Tarefa> getTarefas() {
@@ -114,20 +121,24 @@ public class Controller {
 		this.tarefasCompletas.remove(tarefa);
 	}
 
-	public void removeTarefa(Tarefa tarefa) {
-		if (tarefa.getStatus() == true) {
-			this.removeTarefaCompleta(tarefa);
-		} else {
-			this.removeTarefaIncompleta(tarefa);
+	public void removeTarefa(Tarefa tarefa) throws TarefaNaoCadastradaException {
+		if (this.getTarefas().contains(tarefa)) {
+			if (tarefa.getStatus() == true) {
+				this.removeTarefaCompleta(tarefa);
+			} else {
+				this.removeTarefaIncompleta(tarefa);
+			}
+			this.getTarefas().remove(tarefa);
+		} else{
+			throw new TarefaNaoCadastradaException();
 		}
-		this.getTarefas().remove(tarefa);
 	}
 
 	public void editTarefa(Tarefa oldTarefa, Tarefa newTarefa)
 			throws DataInvalidaException, NomeInvalidoException,
 			NumberFormatException, HoraInvalidaException,
 			MinutoInvalidoException, DiaInvalidoException,
-			MesInvalidoException, AnoInvalidoException {
+			MesInvalidoException, AnoInvalidoException, TarefaNaoCadastradaException {
 
 		if (this.getTarefas().contains(newTarefa)) {
 			if (!oldTarefa.getNome().equals(newTarefa.getNome())) {
