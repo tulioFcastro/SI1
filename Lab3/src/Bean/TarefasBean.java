@@ -119,7 +119,6 @@ public class TarefasBean implements Serializable {
 	}
 
 	public String editarTarefa() {
-		System.out.println(this.getTarefa());
 		if (this.getTarefa() == null) {
 			msgUsuario("Seleção inválida", "Selecione uma tarefa.");
 			return "";
@@ -175,7 +174,7 @@ public class TarefasBean implements Serializable {
 			msgUsuario("Nome Inválido", "Digite um nome válido.");
 			return;
 		}
-		limpaCampos();
+		limpaCampos();	
 	}
 
 	public void ordena() {
