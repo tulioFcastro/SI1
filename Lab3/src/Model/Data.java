@@ -96,6 +96,8 @@ public class Data implements Comparable<Data> {
 	public int compareTo(Data data) {
 		if (this.getAno() == 0 && this.getMes() == 0 && this.getDia() == 0)
 			return 2;
+		if(data.getAno() == 0 && data.getMes() == 0 && data.getDia() == 0) 
+			return -2;
 		if (data.getAno() > this.getAno()) {
 			return -1;
 		} else if (data.getAno() < this.getAno()) {
