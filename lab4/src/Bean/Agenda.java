@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -38,8 +40,7 @@ public class Agenda implements Serializable {
 
 	private ArrayList<Contato> contatos;
 	private Controladora controladora;
-	
-	
+
 	private String email;
 	private Contato contato;
 	private Telefone telefone;
@@ -53,11 +54,12 @@ public class Agenda implements Serializable {
 	public Agenda() {
 		try {
 			lerDados();
-		} catch (IOException e) { }
+		} catch (IOException e) {
+		}
 		inicializarBean();
 	}
-	
-	private void inicializarBean() {		
+
+	private void inicializarBean() {
 		this.login = "";
 		this.password = "";
 		this.newLogin = "";
@@ -69,7 +71,7 @@ public class Agenda implements Serializable {
 		this.contato = new Contato();
 		this.telefone = new Telefone();
 		this.contatoSelecionado = new Contato();
-//		contatoSelecionado.setNome("Renan");
+		// contatoSelecionado.setNome("Renan");
 		this.busca = "";
 		this.tipoDeBusca = "1";
 		this.resultadoBusca = new ArrayList<Contato>();
@@ -95,8 +97,8 @@ public class Agenda implements Serializable {
 		try {
 			fis = new FileInputStream(NOME_DO_ARQUIVO);
 			in = new ObjectInputStream(fis);
-//			contatos = (ArrayList<Contato>) in.readObject();
-			controladora = (Controladora) in.readObject();			
+			// contatos = (ArrayList<Contato>) in.readObject();
+			controladora = (Controladora) in.readObject();
 			in.close();
 		} catch (IOException ex) {
 			this.controladora = new Controladora();
@@ -106,7 +108,6 @@ public class Agenda implements Serializable {
 		}
 	}
 
-	
 	public String getNewLogin() {
 		return newLogin;
 	}
@@ -148,65 +149,74 @@ public class Agenda implements Serializable {
 	}
 
 	public String saveButton() {
-		Usuario novoUsuario = new Usuario(newLogin, newPassword);
-		if(this.controladora.addUsuario(novoUsuario)){
-			msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
-			inicializarBean();
-			this.contatos = novoUsuario.getContatos();
-			try {
-				persistirDados();
-			} catch (Exception e) {
+		Pattern padrao = Pattern.compile("[a-zA-Z0-9]*");
+		Matcher pesquisaLogin = padrao.matcher(newLogin);
+		Matcher pesquisaPassword = padrao.matcher(newPassword);
+		if (pesquisaLogin.matches() && pesquisaPassword.matches()) {
+			Usuario novoUsuario = new Usuario(newLogin, newPassword);
+			if (this.controladora.addUsuario(novoUsuario)) {
+				msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
+				inicializarBean();
+				this.contatos = novoUsuario.getContatos();
+				try {
+					persistirDados();
+				} catch (Exception e) {
+				}
+				return "index.seam";
+			} else {
+				msgUsuario("Usuário já existente", "Escolha outro login");
+				return "";
 			}
-			return "index.seam";
-		} else{
-			msgUsuario("Usuário já existente", "Escolha outro login");
+		} else {
+			msgUsuario("Caracteres inválidos", "Altere seu Login e/ou seu Password");
 			return "";
 		}
-		
-		
-		
-//		if(this.controladora.getUsuarios() == null){
-//			this.controladora.setUsuarios(new ArrayList<Usuario>());
-//		}
-//		if (!this.controladora.getUsuarios().contains(temp)) {
-//			this.controladora.addUsuario(temp);
-//			msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
-//			inicializarBean();
-//			this.contatos = temp.getContatos();
-//			try {
-//				persistirDados();
-//				return "index.seam";
-//			} catch (Exception e) {
-//			}
-//		}
-//		msgUsuario("Usuário já existente", "Escolha outro login");
-//		return "";
+
+		// if(this.controladora.getUsuarios() == null){
+		// this.controladora.setUsuarios(new ArrayList<Usuario>());
+		// }
+		// if (!this.controladora.getUsuarios().contains(temp)) {
+		// this.controladora.addUsuario(temp);
+		// msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
+		// inicializarBean();
+		// this.contatos = temp.getContatos();
+		// try {
+		// persistirDados();
+		// return "index.seam";
+		// } catch (Exception e) {
+		// }
+		// }
+		// msgUsuario("Usuário já existente", "Escolha outro login");
+		// return "";
 	}
 
 	public String loginButton() {
-		ArrayList<Contato> contatos = this.controladora.buscaUsuario(login, password);
-		if(contatos != null){
-			this.contatos=contatos;
-//			msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
+		ArrayList<Contato> contatos = this.controladora.buscaUsuario(login,
+				password);
+		if (contatos != null) {
+			this.contatos = contatos;
+			// msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
 			return "index.seam";
-		} else{
-			msgUsuario("Login não realizado", "Senha errada ou Login inexistente");
-			return "";	
+		} else {
+			msgUsuario("Login não realizado",
+					"Senha errada ou Login inexistente");
+			return "";
 		}
-		
-//		if (this.controladora.getUsuarios() != null) {
-//			for (Usuario user : this.controladora.getUsuarios()) {
-//				ArrayList<Contato> temp = user.confereLogin(login, password);
-//				if (temp != null) {
-//					this.contatos = temp;
-//					msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
-//					return "index.seam";
-//				}
-//			}
-//		}
-//		System.out.println("CCCCCCCCCCCCCCCC");
-//		msgUsuario("Login não realizado", "Senha errada ou Login inexistente");
-//		return "";
+
+		// if (this.controladora.getUsuarios() != null) {
+		// for (Usuario user : this.controladora.getUsuarios()) {
+		// ArrayList<Contato> temp = user.confereLogin(login, password);
+		// if (temp != null) {
+		// this.contatos = temp;
+		// msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
+		// return "index.seam";
+		// }
+		// }
+		// }
+		// System.out.println("CCCCCCCCCCCCCCCC");
+		// msgUsuario("Login não realizado",
+		// "Senha errada ou Login inexistente");
+		// return "";
 	}
 
 	public String logoffButton() {
@@ -219,51 +229,51 @@ public class Agenda implements Serializable {
 		context.addMessage(null, new FacesMessage(string1, string2));
 	}
 
-//	public void inicializeArrays() {
-//
-//		Contato c1 = new Contato();
-//		Contato c2 = new Contato();
-//		Contato c3 = new Contato();
-//		Contato c4 = new Contato();
-//		Contato c5 = new Contato();
-//		Telefone t = new Telefone();
-//		Telefone t2 = new Telefone();
-//		Telefone t3 = new Telefone();
-//		Telefone t4 = new Telefone();
-//		Telefone t5 = new Telefone();
-//		t.setNumero("88221533");
-//		t2.setNumero("88332343");
-//		t3.setNumero("99832343");
-//		t4.setNumero("99990000");
-//		t5.setNumero("89343231");
-//		t.setOperadora("OI");
-//		t3.setCodigoRegional("81");
-//		t3.setOperadoraLigar("31");
-//		c1.setNome("Robert Silva Alves");
-//		c2.setNome("Marta");
-//		c3.setNome("Chris Santos");
-//		c4.setNome("Roberto Carlos Campos da Silva");
-//		c5.setNome("Gilberto");
-//		c1.addEmail("RobertSA@gmail.com");
-//		c3.addEmail("ChrisSantos@gmail.com");
-//		c1.setIdade("40");
-//		c2.setIdade("20");
-//		c5.setIdade("60");
-//		try {
-//			c1.addTelefone(t);
-//			c1.addTelefone(t3);
-//			c1.addTelefone(t4);
-//			c2.addTelefone(t2);
-//			c3.addTelefone(t3);
-//			c3.addTelefone(t2);
-//			c4.addTelefone(t4);
-//			c5.addTelefone(t5);
-//		} catch (InvalidNumberException e) {
-//		}
-//		this.contatos = new ArrayList<Contato>(
-//				Arrays.asList(c1, c2, c3, c4, c5));
-//
-//	}
+	// public void inicializeArrays() {
+	//
+	// Contato c1 = new Contato();
+	// Contato c2 = new Contato();
+	// Contato c3 = new Contato();
+	// Contato c4 = new Contato();
+	// Contato c5 = new Contato();
+	// Telefone t = new Telefone();
+	// Telefone t2 = new Telefone();
+	// Telefone t3 = new Telefone();
+	// Telefone t4 = new Telefone();
+	// Telefone t5 = new Telefone();
+	// t.setNumero("88221533");
+	// t2.setNumero("88332343");
+	// t3.setNumero("99832343");
+	// t4.setNumero("99990000");
+	// t5.setNumero("89343231");
+	// t.setOperadora("OI");
+	// t3.setCodigoRegional("81");
+	// t3.setOperadoraLigar("31");
+	// c1.setNome("Robert Silva Alves");
+	// c2.setNome("Marta");
+	// c3.setNome("Chris Santos");
+	// c4.setNome("Roberto Carlos Campos da Silva");
+	// c5.setNome("Gilberto");
+	// c1.addEmail("RobertSA@gmail.com");
+	// c3.addEmail("ChrisSantos@gmail.com");
+	// c1.setIdade("40");
+	// c2.setIdade("20");
+	// c5.setIdade("60");
+	// try {
+	// c1.addTelefone(t);
+	// c1.addTelefone(t3);
+	// c1.addTelefone(t4);
+	// c2.addTelefone(t2);
+	// c3.addTelefone(t3);
+	// c3.addTelefone(t2);
+	// c4.addTelefone(t4);
+	// c5.addTelefone(t5);
+	// } catch (InvalidNumberException e) {
+	// }
+	// this.contatos = new ArrayList<Contato>(
+	// Arrays.asList(c1, c2, c3, c4, c5));
+	//
+	// }
 
 	public void addTelefone(ActionEvent event) {
 		this.telefoneInvalido = false;
@@ -276,8 +286,6 @@ public class Agenda implements Serializable {
 		}
 		this.telefone = new Telefone();
 	}
-
-	
 
 	public void removeEmail(String email) {
 		this.contato.removeEmail(email);
