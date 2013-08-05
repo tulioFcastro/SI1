@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Agenda</title>
+</h:head>
+<h:body>
+	<h:form id="form">
+		<!-- Aqui começa os butoes da tela inicial -->
+		<!-- =========================== -->
+		<p:fieldset legend="Agenda - Lab4">
+			<h:panelGrid columns="2" cellpadding="1">
+				<p:fieldset legend="Busca">
+					<h:panelGrid columns="2" cellpadding="2">
+						<p:inputText id="buscarInputs" value="#{agendaBean.busca}"
+							style=" width : 465px;">
+							<f:ajax event="change" listener="#{agendaBean.fazBusca}"
+								render="resulBusca" />
+						</p:inputText>
+
+						<p:commandButton id="butaoBuscar" value="Buscar Contato"
+							onclick="dlg3.show()" style="font-size:12pt" type="button">
+						</p:commandButton>
+
+						<p:selectOneRadio id="options" value="#{agendaBean.tipoDeBusca}">
+							<f:selectItem itemLabel="nome/telefone" itemValue="1" />
+							<f:selectItem itemLabel="idade menor" itemValue="2" />
+							<f:selectItem itemLabel="idade igual" itemValue="3" />
+							<f:selectItem itemLabel="idade maior" itemValue="4" />
+							<f:ajax event="change" listener="#{agendaBean.fazBusca}"
+								render="resulBusca" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</p:fieldset>
+
+			</h:panelGrid>
+			<!-- Aqui começa caixa de dialogo para o resultado da busca -->
+			<p:dialog id="buscaDialog" header="Resultado" widgetVar="dlg3"
+				modal="true" height="300" width="500">
+				<!-- Aqui começa a tabela do resultado da busca -->
+				<p:dataTable id="resulBusca" value="#{agendaBean.resultadoBusca}"
+					var="cont" emptyMessage="No records found.">
+
+					<p:column headerText="Nome" style="width:90%">
+						<h:outputText value="#{cont.nome}" />
+					</p:column>
+					<p:column style="width:10%">
+						<p:commandButton id="selectButton" update=":form:contDialogId"
+							oncomplete="contDialog.show()" icon="ui-icon-plusthick"
+							title="Exibir">
+							<f:setPropertyActionListener value="#{cont}"
+								target="#{agendaBean.contatoSelecionado}" />
+						</p:commandButton>
+
+					</p:column>
+
+
+				</p:dataTable>
+			</p:dialog>
+
+			<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+			<h:panelGrid id="novoContatdoGrid">
+				<!-- Aqui começa caixa de dialogo para novo contato e editar-->
+				<p:dialog id="newContactDialog" header="" closable="false"
+					widgetVar="dlg2" modal="true" height="550" width="700">
+
+					<h:panelGrid>
+						<h:panelGrid columns="4" cellpadding="1">
+							<h:outputLabel value="Nome: *" for="nameInput"></h:outputLabel>
+							<h:inputText id="nameInput" value="#{agendaBean.contato.nome}"
+								style=" width : 415px;">
+								<f:ajax event="mousemove" render="butaoSalvar mensagem" />
+							</h:inputText>
+
+							<h:outputLabel value="Idade: " for="idadeInput"></h:outputLabel>
+
+							<p:inputMask id="idadeInput" value="#{agendaBean.contato.idade}"
+								style=" width : 50px;" mask="999"></p:inputMask>
+						</h:panelGrid>
+
+
+
+						<!-- Aqui começa a entrada do telefone -->
+
+						<h:panelGrid columns="6" cellpadding="1">
+							<h:outputLabel value="Número: *" for="number"></h:outputLabel>
+							<p:selectOneMenu value="#{agendaBean.telefone.operadora}"
+								style=" width : 120px;">
+								<f:selectItem itemLabel="Operadora" itemValue="" />
+								<f:selectItem itemLabel="OI" itemValue="OI" />
+								<f:selectItem itemLabel="TIM" itemValue="TIM" />
+								<f:selectItem itemLabel="Vivo" itemValue="Vivo" />
+								<f:selectItem itemLabel="Claro" itemValue="Claro" />
+								<f:selectItem itemLabel="Residencial" itemValue="Residencial" />
+							</p:selectOneMenu>
+
+							<p:inputMask id="codNacional"
+								value="#{agendaBean.telefone.codigoNacional}"
+								style=" width : 50px;" mask="+9999">Cód Nacional</p:inputMask>
+
+							<p:inputMask id="operadora2"
+								value="#{agendaBean.telefone.operadoraLigar}"
+								style=" width : 30px;" mask="99">Operadora</p:inputMask>
+
+							<p:inputMask id="codigo"
+								value="#{agendaBean.telefone.codigoRegional}"
+								style=" width : 30px;" mask="(99)">Cód Regional</p:inputMask>
+
+							<p:inputMask id="number" value="#{agendaBean.telefone.numero}"
+								style=" width : 150px;" mask="999999999">Telefone</p:inputMask>
+
+							<p:commandButton id="addTel" icon="ui-icon-plus"
+								actionListener="#{agendaBean.addTelefone}"
+								update="nums,butaoSalvar,msgDialog">
+							</p:commandButton>
+						</h:panelGrid>
+
+						<p:dialog id="msgDialog" widgetVar="messageDialog"
+							header="telefone inválido" appendToBody="false"
+							visible="#{agendaBean.telefoneInvalido}" height="100" width="500">
+							<p:messages id="messagesInDialog" />
+							<h:panelGrid columns="1" cellpadding="1"
+								columnClasses="alignleft,alignright">
+								<h:outputText
+									value="Número inválido, use só o número com oito dígitos ou o código da operadora + código Regional + número, e também o número deve ser único." />
+							</h:panelGrid>
+
+							<center>
+								<h:commandButton id="ok" onclick="messageDialog.hide()"
+									value="fechar" type="button">
+								</h:commandButton>
+							</center>
+							<h:panelGrid columns="1" cellpadding="1" style="align: center;">
+
+							</h:panelGrid>
+						</p:dialog>
+
+						<!-- Aqui começa a tabela de telefone -->
+
+						<p:dataList value="#{agendaBean.contato.telefones}" var="tel"
+							id="nums" paginator="false" rows="5"
+							rowsPerPageTemplate="5,10,15" type="none">
+
+							<f:facet name="header">  
+               				 Números  
+           				 </f:facet>
+
+							<p:commandButton icon="ui-icon-close"
+								actionListener="#{agendaBean.removeTelefone(tel)}" update="nums">
+							</p:commandButton>
+
+							<h:outputText value="#{tel.numero}" style="margin-left:10px" />
+							<br />
+
+						</p:dataList>
+
+						<!-- Aqui começa a entrada para email -->
+
+						<h:panelGrid columns="3" cellpadding="1">
+							<h:outputLabel value="Email: " for="email"></h:outputLabel>
+							<h:inputText id="email" value="#{agendaBean.email}"
+								style=" width : 500px;" mask="99"></h:inputText>
+
+							<p:commandButton icon="ui-icon-plus"
+								actionListener="#{agendaBean.addEmail}" update="emails"></p:commandButton>
+						</h:panelGrid>
+
+						<!-- Aqui começa a tabela de emails -->
+						<h:panelGrid columns="1" style=" width : 630px;">
+							<p:dataList value="#{agendaBean.contato.emails}" var="eml"
+								id="emails" paginator="false">
+
+								<f:facet name="header">  
+               				 E-mails  
+           				 </f:facet>
+
+								<p:commandButton icon="ui-icon-close"
+									actionListener="#{agendaBean.removeEmail(eml)}" update="emails">
+								</p:commandButton>
+
+								<h:outputText value="#{eml}" style="margin-left:10px" />
+							</p:dataList>
+						</h:panelGrid>
+						<h:outputLabel value="Descrição: " for="descricao"></h:outputLabel>
+						<p:inputTextarea id="descricao" rows="6" cols="78"
+							value="#{agendaBean.contato.descricao}" />
+
+					</h:panelGrid>
+					<h:outputText id="mensagem"
+						value="*Nome obrigatório e pelo menos um telefone com oito dígitos."
+						style="color:red" rendered="#{!(agendaBean.contatoValido)}" />
+
+					<h:panelGrid columns="2" cellpadding="1">
+						<h:commandButton id="butaoSalvar"
+							actionListener="#{agendaBean.addContato}" value="confirmar"
+							update="conts" disabled="#{!(agendaBean.contatoValido)}" />
+						<h:commandButton id="butaoCancelar"
+							actionListener="#{agendaBean.cancelarContato}" value="cancelar" />
+					</h:panelGrid>
+
+				</p:dialog>
+			</h:panelGrid>
+			<p:fieldset legend="Contatos">
+				<p:growl id="msgs" showDetail="true" />
+
+				<p:dataTable id="conts" var="con" value="#{agendaBean.contatos}">
+
+					<p:column headerText="Nome" style="width:15%">
+						<h:outputText value="#{con.nome}" />
+					</p:column>
+
+					<p:column headerText="Quantidade de Telefones" style="width:15%">
+						<h:outputText value="#{con.quantidadeTelefones}" />
+					</p:column>
+
+					<p:column style="width:4%">
+						<p:commandButton id="selectButton" update=":form:contDialogId"
+							oncomplete="contDialog.show()" icon="ui-icon-plusthick"
+							title="Exibir">
+							<f:setPropertyActionListener value="#{con}"
+								target="#{agendaBean.contatoSelecionado}" />
+						</p:commandButton>
+
+						<p:commandButton id="selectButton2"
+							update=":form:newContactDialog" oncomplete="dlg2.show()"
+							icon="ui-icon-wrench" title="Editar">
+							<f:setPropertyActionListener value="#{con}"
+								target="#{agendaBean.contato}" event="change" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:fieldset>
+			<br />
+			<p:commandButton id="modalDialogButton" value="Cadastrar Contato"
+				onclick="dlg2.show()" type="button" />
+			<p:commandButton value="Logoff" action="#{agendaBean.logoffButton}">
+			</p:commandButton>
+
+			<!-- Aqui começa a caixa de dialogo dos detalhes do contato -->
+			<p:dialog id="contDialogId" header="Contato Detalhes"
+				widgetVar="contDialog" modal="true" resizable="false"
+				showEffect="clip" hideEffect="fold">
+				<h:panelGrid id="display">
+
+					<h:panelGrid id="display2" columns="5" cellpadding="1">
+						<h:outputText value="Nome:" />
+						<h:outputText value="#{agendaBean.contatoSelecionado.nome}"
+							style="width: 300px" />
+						<h:outputText value=", Idade:" />
+						<h:outputText value="#{agendaBean.contatoSelecionado.idade}" />
+
+					</h:panelGrid>
+					<!-- Aqui começa a tabela de numeros -->
+					<p:dataTable value="#{agendaBean.contatoSelecionado.telefones}"
+						var="tel" id="numsTelefone" emptyMessage="No records found.">
+
+						<p:column headerText="Ope." style="width:10%">
+							<h:outputText value="#{tel.operadora}" />
+						</p:column>
+						<p:column headerText="Cód. Nac" style="width:10%">
+							<h:outputText value="#{tel.codigoNacional}" />
+						</p:column>
+						<p:column headerText="Cód. Ope." style="width:10%">
+							<h:outputText value="#{tel.operadoraLigar}" />
+						</p:column>
+						<p:column headerText="Cód. Reg.l" style="width:10%">
+							<h:outputText value="#{tel.codigoRegional}" />
+						</p:column>
+						<p:column headerText="Número">
+							<h:outputText value="#{tel.numero}" />
+						</p:column>
+
+						<f:facet name="header">  
+               				 Números
+           				 </f:facet>
+					</p:dataTable>
+
+					<!-- Aqui começa a lista de email -->
+					<p:dataList value="#{agendaBean.contatoSelecionado.emails}"
+						var="email" id="emailList" paginator="false" rows="5"
+						rowsPerPageTemplate="5,10,15" type="none" style="width: 300px">
+
+						<f:facet name="header">  
+               				 E-mails
+           				 </f:facet>
+						<h:outputText value="#{email}" style="margin-left:10px" />
+						<br />
+
+					</p:dataList>
+					<h:panelGrid id="display3" columns="1">
+						<h:outputLabel value="Descrição: " for="descricao2"></h:outputLabel>
+						<h:outputText id="descricao2"
+							value="#{agendaBean.contatoSelecionado.descricao}"
+							style="width: 400px;word-wrap: break-word; border:solid 1px #e0e0e0;"></h:outputText>
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+			</p:dialog>
+		</p:fieldset>
+	</h:form>
+</h:body>
+</html>
