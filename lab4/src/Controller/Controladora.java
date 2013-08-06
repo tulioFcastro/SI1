@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
 import Model.Contato;
 import Model.Usuario;
 
@@ -50,8 +47,6 @@ public class Controladora implements Serializable {
 		for (Usuario usuario : usuarios) {
 			resposta = usuario.confereLogin(login, password);
 			if(resposta != null){
-				FacesContext context = FacesContext.getCurrentInstance();
-				context.addMessage(null, new FacesMessage("Usuário Logado", "Seja bem vindo" + login));
 				return resposta;
 			}
 		}

@@ -97,7 +97,6 @@ public class Agenda implements Serializable {
 		try {
 			fis = new FileInputStream(NOME_DO_ARQUIVO);
 			in = new ObjectInputStream(fis);
-			// contatos = (ArrayList<Contato>) in.readObject();
 			controladora = (Controladora) in.readObject();
 			in.close();
 		} catch (IOException ex) {
@@ -156,8 +155,9 @@ public class Agenda implements Serializable {
 			Usuario novoUsuario = new Usuario(newLogin, newPassword);
 			if (this.controladora.addUsuario(novoUsuario)) {
 				msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
-				inicializarBean();
 				this.contatos = novoUsuario.getContatos();
+				inicializeArrays(novoUsuario);
+				inicializarBean();
 				try {
 					persistirDados();
 				} catch (Exception e) {
@@ -168,55 +168,27 @@ public class Agenda implements Serializable {
 				return "";
 			}
 		} else {
-			msgUsuario("Caracteres inválidos", "Altere seu Login e/ou seu Password");
+			msgUsuario("Caracteres inválidos",
+					"Altere seu Login e/ou seu Password");
 			return "";
 		}
-
-		// if(this.controladora.getUsuarios() == null){
-		// this.controladora.setUsuarios(new ArrayList<Usuario>());
-		// }
-		// if (!this.controladora.getUsuarios().contains(temp)) {
-		// this.controladora.addUsuario(temp);
-		// msgUsuario("Usuário Cadastrado", "Seja Bem-vindo " + newLogin);
-		// inicializarBean();
-		// this.contatos = temp.getContatos();
-		// try {
-		// persistirDados();
-		// return "index.seam";
-		// } catch (Exception e) {
-		// }
-		// }
-		// msgUsuario("Usuário já existente", "Escolha outro login");
-		// return "";
 	}
 
 	public String loginButton() {
 		ArrayList<Contato> contatos = this.controladora.buscaUsuario(login,
 				password);
 		if (contatos != null) {
+			System.out.println("ASDASDASDAD");
 			this.contatos = contatos;
-			// msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
+			System.out.println("BBBBBBBBBBBBBBBBBB");
+			 msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
+			 System.out.println("CCCCCCCCCCCCCCCCCCCCCCCC");
 			return "index.seam";
 		} else {
 			msgUsuario("Login não realizado",
 					"Senha errada ou Login inexistente");
 			return "";
 		}
-
-		// if (this.controladora.getUsuarios() != null) {
-		// for (Usuario user : this.controladora.getUsuarios()) {
-		// ArrayList<Contato> temp = user.confereLogin(login, password);
-		// if (temp != null) {
-		// this.contatos = temp;
-		// msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
-		// return "index.seam";
-		// }
-		// }
-		// }
-		// System.out.println("CCCCCCCCCCCCCCCC");
-		// msgUsuario("Login não realizado",
-		// "Senha errada ou Login inexistente");
-		// return "";
 	}
 
 	public String logoffButton() {
@@ -229,51 +201,53 @@ public class Agenda implements Serializable {
 		context.addMessage(null, new FacesMessage(string1, string2));
 	}
 
-	// public void inicializeArrays() {
-	//
-	// Contato c1 = new Contato();
-	// Contato c2 = new Contato();
-	// Contato c3 = new Contato();
-	// Contato c4 = new Contato();
-	// Contato c5 = new Contato();
-	// Telefone t = new Telefone();
-	// Telefone t2 = new Telefone();
-	// Telefone t3 = new Telefone();
-	// Telefone t4 = new Telefone();
-	// Telefone t5 = new Telefone();
-	// t.setNumero("88221533");
-	// t2.setNumero("88332343");
-	// t3.setNumero("99832343");
-	// t4.setNumero("99990000");
-	// t5.setNumero("89343231");
-	// t.setOperadora("OI");
-	// t3.setCodigoRegional("81");
-	// t3.setOperadoraLigar("31");
-	// c1.setNome("Robert Silva Alves");
-	// c2.setNome("Marta");
-	// c3.setNome("Chris Santos");
-	// c4.setNome("Roberto Carlos Campos da Silva");
-	// c5.setNome("Gilberto");
-	// c1.addEmail("RobertSA@gmail.com");
-	// c3.addEmail("ChrisSantos@gmail.com");
-	// c1.setIdade("40");
-	// c2.setIdade("20");
-	// c5.setIdade("60");
-	// try {
-	// c1.addTelefone(t);
-	// c1.addTelefone(t3);
-	// c1.addTelefone(t4);
-	// c2.addTelefone(t2);
-	// c3.addTelefone(t3);
-	// c3.addTelefone(t2);
-	// c4.addTelefone(t4);
-	// c5.addTelefone(t5);
-	// } catch (InvalidNumberException e) {
-	// }
-	// this.contatos = new ArrayList<Contato>(
-	// Arrays.asList(c1, c2, c3, c4, c5));
-	//
-	// }
+	private void inicializeArrays(Usuario usuario) {
+		try {
+			Contato c1 = new Contato();
+			Contato c2 = new Contato();
+			Contato c3 = new Contato();
+			Contato c4 = new Contato();
+			Contato c5 = new Contato();
+			Telefone t = new Telefone();
+			Telefone t2 = new Telefone();
+			Telefone t3 = new Telefone();
+			Telefone t4 = new Telefone();
+			Telefone t5 = new Telefone();
+			t.setNumero("88221533");
+			t2.setNumero("88332343");
+			t3.setNumero("99832343");
+			t4.setNumero("99990000");
+			t5.setNumero("89343231");
+			t.setOperadora("OI");
+			t3.setCodigoRegional("81");
+			t3.setOperadoraLigar("31");
+			c1.setNome("Robert Silva Alves");
+			c2.setNome("Marta");
+			c3.setNome("Chris Santos");
+			c4.setNome("Roberto Carlos Campos da Silva");
+			c5.setNome("Gilberto");
+			c1.addEmail("RobertSA@gmail.com");
+			c3.addEmail("ChrisSantos@gmail.com");
+			c1.setIdade("40");
+			c2.setIdade("20");
+			c5.setIdade("60");
+			c1.addTelefone(t);
+			c1.addTelefone(t3);
+			c1.addTelefone(t4);
+			c2.addTelefone(t2);
+			c3.addTelefone(t3);
+			c3.addTelefone(t2);
+			c4.addTelefone(t4);
+			c5.addTelefone(t5);
+			usuario.addContato(c1);
+			usuario.addContato(c2);
+			usuario.addContato(c3);
+			usuario.addContato(c4);
+			usuario.addContato(c5);
+		} catch (InvalidNumberException e) {
+		}
+
+	}
 
 	public void addTelefone(ActionEvent event) {
 		this.telefoneInvalido = false;
