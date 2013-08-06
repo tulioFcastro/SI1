@@ -178,15 +178,12 @@ public class Agenda implements Serializable {
 		ArrayList<Contato> contatos = this.controladora.buscaUsuario(login,
 				password);
 		if (contatos != null) {
-			System.out.println("ASDASDASDAD");
 			this.contatos = contatos;
-			System.out.println("BBBBBBBBBBBBBBBBBB");
 			 msgUsuario("Usuário logado", "Seja Bem-vindo " + login);
-			 System.out.println("CCCCCCCCCCCCCCCCCCCCCCCC");
 			return "index.seam";
 		} else {
 			msgUsuario("Login não realizado",
-					"Senha errada ou Login inexistente");
+					"Password errado ou Login inexistente");
 			return "";
 		}
 	}
